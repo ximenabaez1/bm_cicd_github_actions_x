@@ -53,30 +53,22 @@ jobs:
           echo "dbname = $SNOWSQL_DATABASE" >> ~/.snowsql/config
           echo "schemaname = $SNOWFLAKE_SCHEMA_DEV" >> ~/.snowsql/config
 
-        
-          echo "SNOWSQL_ROLE=${SNOWSQL_ROLE}" >> $GITHUB_ENV
-          echo "SNOWSQL_ACCOUNT=${SNOWSQL_ACCOUNT}" >> $GITHUB_ENV
-          echo "SNOWSQL_USER=${SNOWSQL_USER}" >> $GITHUB_ENV
-          echo "SNOWSQL_WAREHOUSE=${SNOWSQL_WAREHOUSE}" >> $GITHUB_ENV
-          echo "SNOWSQL_DATABASE=${SNOWSQL_DATABASE}" >> $GITHUB_ENV
-          echo "SNOWSQL_SCHEMA_DEV=${SNOWFLAKE_SCHEMA_DEV}" >> $GITHUB_ENV
-
-      - name: Test installation
-        run:  ~/bin/snowsql -v
-
       # Deploy setup
       - name: Deploy setup SQL script with SnowSQL
         run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/setup/dev/dev_space.sql
 
-      - name: run python file
-        run: |
-          python $GITHUB_WORKSPACE/src/sproc/evaluate.py
-          python $GITHUB_WORKSPACE/src/sproc/process.py
-          python $GITHUB_WORKSPACE/src/sproc/inference.py
+      # - name: run python file
+      #   run: |
+      #     python $GITHUB_WORKSPACE/src/sproc/evaluate.py
+      #     python $GITHUB_WORKSPACE/src/sproc/process.py
+      #     python $GITHUB_WORKSPACE/src/sproc/inference.py
 
+      - name: Loads data to stage
+        run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/loading/load_raw_file.sql
 
-       # Deploy setup
-      - name: Creates pipeline inference
-        run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/tasks/pipeline_inference.sql
-
-
+        # echo "SNOWSQL_ROLE=${SNOWSQL_ROLE}" >> $GITHUB_ENV
+        # echo "SNOWSQL_ACCOUNT=${SNOWSQL_ACCOUNT}" >> $GITHUB_ENV
+        # echo "SNOWSQL_USER=${SNOWSQL_USER}" >> $GITHUB_ENV
+        # echo "SNOWSQL_WAREHOUSE=${SNOWSQL_WAREHOUSE}" >> $GITHUB_ENV
+        # echo "SNOWSQL_DATABASE=${SNOWSQL_DATABASE}" >> $GITHUB_ENV
+        # echo "SNOWSQL_SCHEMA_DEV=${SNOWFLAKE_SCHEMA_DEV}" >> $GITHUB_ENV
