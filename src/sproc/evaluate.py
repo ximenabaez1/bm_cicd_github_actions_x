@@ -26,17 +26,18 @@ session = Session.builder.configs(dict_creds).create()
 session.use_database(dict_creds['database'])
 session.use_schema(dict_creds['schema'])
 
-def do_evaluation():
-    print("STORE PROCEDURE QUE REPRESENTA EVALUACION DEL MODELO")
+print("SI SE USA DB Y SCHEMA")
+# def do_evaluation():
+#     print("STORE PROCEDURE QUE REPRESENTA EVALUACION DEL MODELO")
 
 
-sproc = session.sproc.register(func=do_evaluation,
-                                  name='evaluation_step',
-                                  is_permanent=True,
-                                  replace=True,
-                                  stage_location='@PYTHON_FILES',
-                                  packages=['snowflake-ml-python',
-                                            'snowflake-snowpark-python'
-                                           ])
+# sproc = session.sproc.register(func=do_evaluation,
+#                                   name='evaluation_step',
+#                                   is_permanent=True,
+#                                   replace=True,
+#                                   stage_location='@PYTHON_FILES',
+#                                   packages=['snowflake-ml-python',
+#                                             'snowflake-snowpark-python'
+#                                            ])
 
 
