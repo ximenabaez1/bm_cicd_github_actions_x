@@ -15,7 +15,7 @@ on:
 
 jobs:
   setup_snowflake_workspace_pre:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'prod' && github.event.pull_request.head.ref == 'pre' || github.event_name == 'workflow_dispatch'
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'pre' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
     steps:
