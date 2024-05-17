@@ -1,4 +1,4 @@
-USE ROLE '${SNOWSQL_ROLE}';
+USE ROLE ACCOUNTADMIN;
 
 -- Create Database and Schemas to separate processing, execution, and deployment
 CREATE DATABASE IF NOT EXISTS {{SNOWSQL_DATABASE}};
