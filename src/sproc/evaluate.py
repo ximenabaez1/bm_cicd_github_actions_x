@@ -1,4 +1,5 @@
 from snowflake.snowpark.session import Session
+import snowflake.snowpark.types as T
 import os
 import json
 import configparser
@@ -27,7 +28,7 @@ session.use_database(dict_creds['database'])
 session.use_schema(dict_creds['schema'])
 
 print("SI SE USA DB Y SCHEMA")
-def do_evaluation(session: Session):
+def do_evaluation(session: Session) -> T.Variant:
     return print("STORE PROCEDURE QUE REPRESENTA EVALUACION DEL MODELO")
 
 
