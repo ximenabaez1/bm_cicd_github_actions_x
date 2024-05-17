@@ -2,17 +2,20 @@ name: snowflake-dataops
 
 # Controls when the action will run. 
 on:
-  push:
+  pull_request:
     branches:
-      - dev
+      - pre
+    types:
+      - closed
   #  paths:
   #    - 'migrations/**'
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  #workflow_dispatch:
 
 jobs:
-  deploy-snowflake-changes-job:
+  setup_snowflake_workspace_pre:
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'pre' && github.event.pull_request.head.ref == 'dev'
     runs-on: ubuntu-latest
 
     steps:
@@ -55,6 +58,6 @@ jobs:
       - name: Test installation
         run:  ~/bin/snowsql -v
 
-      # Deploy data Streams and Tasks for scheduled inference
+      # Deploy setup
       - name: Deploy setup SQL script with SnowSQL
-        run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/setup/snowflake_space.sql
+        run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/setup/pre/pre_space.sql
