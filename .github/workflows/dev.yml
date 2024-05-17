@@ -8,7 +8,7 @@ on:
   #  paths:
   #    - 'migrations/**'
   # TODO: VALIDAR FUNCIONAMIENTO DE workflow_dispatch CUANDO SE ELIMINA Y CUANDO SE AGREGA DE YML.
-  workflow_dispatch:
+  #workflow_dispatch:
 
 jobs:
   setup_snowflake_workspace_dev:
@@ -59,6 +59,8 @@ jobs:
           echo "SNOWSQL_DATABASE=${SNOWSQL_DATABASE}" >> $GITHUB_ENV
           echo "SNOWSQL_SCHEMA_DEV=${SNOWFLAKE_SCHEMA_DEV}" >> $GITHUB_ENV
 
+          python $GITHUB_WORKSPACE/src/sproc/process.py
+          
       - name: Test installation
         run:  ~/bin/snowsql -v
 
