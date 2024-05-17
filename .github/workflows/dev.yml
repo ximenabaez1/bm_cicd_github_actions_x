@@ -64,4 +64,4 @@ jobs:
 
       # Deploy setup
       - name: Deploy setup SQL script with SnowSQL
-        run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/setup/general/general_space.sql
+        run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/setup/dev/dev_space.sql
