@@ -69,5 +69,9 @@ jobs:
         run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/setup/dev/dev_space.sql
 
       - name: run python file
-        run: python $GITHUB_WORKSPACE/src/sproc/evaluate.py
+        run: |
+          python $GITHUB_WORKSPACE/src/sproc/evaluate.py
+          python $GITHUB_WORKSPACE/src/sproc/process.py
+          python $GITHUB_WORKSPACE/src/sproc/inference.py
+
 
