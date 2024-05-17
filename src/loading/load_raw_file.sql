@@ -23,8 +23,8 @@ CREATE OR REPLACE FILE FORMAT BANANA_QUALITY.DEV.MY_CSV_FORMAT
 
 
 USE SCHEMA BANANA_QUALITY.DEV;
-PUT 'file://C:/Users/erick.a.perez/OneDrive - Accenture/Documents/erick.a.perez/PersonalProjects/snowflake/bm_cicd_github_actions/data/banana_quality_raw.csv' @BANANA_QUALITY.DEV.RAW_DATA AUTO_COMPRESS=FALSE;
---PUT 'file://C:/Users/erick.a.perez/OneDrive - Accenture/Documents/erick.a.perez/PersonalProjects/snowflake/banana_model/data/banana_quality_raw.csv' @RAW_DATA AUTO_COMPRESS=FALSE;
+--PUT 'file://C:/Users/erick.a.perez/OneDrive - Accenture/Documents/erick.a.perez/PersonalProjects/snowflake/bm_cicd_github_actions/data/banana_quality_raw.csv' @BANANA_QUALITY.DEV.RAW_DATA AUTO_COMPRESS=FALSE;
+PUT 'file://C:/Users/erick.a.perez/OneDrive - Accenture/Documents/erick.a.perez/PersonalProjects/snowflake/banana_model/data/banana_quality_raw.csv' @RAW_DATA AUTO_COMPRESS=FALSE;
 
 
 COPY INTO BANANA_QUALITY.DEV.BANANA_QUALITY_RAW
