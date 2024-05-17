@@ -61,11 +61,13 @@ jobs:
           echo "SNOWSQL_DATABASE=${SNOWSQL_DATABASE}" >> $GITHUB_ENV
           echo "SNOWSQL_SCHEMA_DEV=${SNOWFLAKE_SCHEMA_DEV}" >> $GITHUB_ENV
 
-          python $GITHUB_WORKSPACE/src/sproc/evaluate.py
-
       - name: Test installation
         run:  ~/bin/snowsql -v
 
       # Deploy setup
       - name: Deploy setup SQL script with SnowSQL
         run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/setup/dev/dev_space.sql
+
+      - name: run python file
+        run: python $GITHUB_WORKSPACE/src/sproc/evaluate.py
+
