@@ -51,6 +51,13 @@ def train_model(session: Session, db_name: str, schema_name: str, train_table: s
     xgbmodel.fit(df_train_banana)
     return xgbmodel
 
+# if __name__ == "__main__":
+
+#     xgbmodel = train_model(session, "BANANA_QUALITY", "DEV", "BANANA_TRAIN")
+#     xgb_file = xgbmodel.to_xgboost()
+#     MODEL_FILE = 'model.joblib.gz'
+#     joblib.dump(xgb_file, MODEL_FILE)
+#     session.file.put(MODEL_FILE, "@DEV.ML_MODELS", auto_compress=False, overwrite=True)
  
 
 def main(sess: Session) -> T.Variant:
