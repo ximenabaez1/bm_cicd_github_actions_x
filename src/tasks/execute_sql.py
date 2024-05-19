@@ -5,7 +5,7 @@ def main():
     db_name = os.environ.get('SNOWSQL_DATABASE')
     schema_name = os.environ.get('SNOWFLAKE_SCHEMA_DEV')
 
-    file_path = os.path.join(os.environ['GITHUB_WORKSPACE'], 'query_prueba.sql')
+    file_path = os.path.join(os.environ['GITHUB_WORKSPACE'], 'src/tasks/query_prueba.sql')
     print(file_path)
 
     # Leer el script SQL
