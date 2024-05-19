@@ -3,6 +3,7 @@ from snowflake.snowpark import DataFrame
 import snowflake.snowpark.types as T
 import snowflake.snowpark.functions as F
 from snowflake.ml.modeling.xgboost import XGBClassifier
+import io
 
 from typing import *
 import json
@@ -41,8 +42,8 @@ session.use_schema(dict_creds['schema'])
 
 #Functions
 def train_model(session: Session, db_name: str, schema_name: str, train_table: str) -> XGBClassifier:
-    session.use_database(db_name)
-    session.use_schema(schema_name)
+    #session.use_database(db_name)
+    #session.use_schema(schema_name)
     df_train_banana = session.table(train_table)
     feature_cols = df_train_banana.columns
     feature_cols.remove('QUALITY')
@@ -65,8 +66,13 @@ def main(sess: Session) -> T.Variant:
     xgbmodel = train_model(sess, "BANANA_QUALITY", "DEV", "BANANA_TRAIN")
     xgb_file = xgbmodel.to_xgboost()
     MODEL_FILE = 'model.joblib.gz'
-    joblib.dump(xgb_file, MODEL_FILE)
-    sess.file.put(MODEL_FILE, "@DEV.ML_MODELS", auto_compress=False, overwrite=True)
+    # joblib.dump(xgb_file, MODEL_FILE)
+    # sess.file.put(MODEL_FILE, "@DEV.ML_MODELS", auto_compress=False, overwrite=True)
+    buffer = io.BytesIO()
+    joblib.dump(xgb_file, buffer)
+    buffer.seek(0)
+
+    sess.file.put_stream(buffer, f"@DEV.ML_MODELS/{MODEL_FILE}", auto_compress=False, overwrite=True)
 
     return str(f'El entrenamiento se realizó de manera exitosa')
 
