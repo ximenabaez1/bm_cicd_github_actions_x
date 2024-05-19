@@ -46,11 +46,15 @@ session.use_schema(dict_creds['schema'])
 #Functions
 from cachetools import cached
 
-@cached(cache={})
-def load_model(model_path: str) -> object:
-    from joblib import load
-    model = load(model_path)
+#@cached(cache={})
+def load_model(model_path: str):
+    with open(model_path, 'rb') as file:
+            model = joblib.load(file)
     return model
+
+    # from joblib import load
+    # model = load(model_path)
+    # return model
 
 def get_metrics(session: Session, db_name: str, schema_name: str, table_name: str, model: XGBClassifier)-> Dict[str, str]:
     df = session.table(f"{db_name}.{schema_name}.{table_name}")
@@ -122,7 +126,13 @@ def main(sess: Session) -> T.Variant:
     IMPORT_DIRECTORY_NAME = "snowflake_import_directory"
     import_dir = sys._xoptions[IMPORT_DIRECTORY_NAME]
     model_name = 'model.joblib.gz'
-    model = load_model(import_dir+model_name)
+    model_path = os.path.join(import_dir, model_name)
+
+    model = load_model(model_path)
+    # with open(import_dir+model_name, 'rb') as file:
+    #     return file.read
+
+    # model = load_model(import_dir+model_name)
 
     metrics_train = get_metrics(sess,"BANANA_QUALITY", "DEV", "BANANA_TRAIN", model)
     metrics_test = get_metrics(sess,"BANANA_QUALITY", "DEV", "BANANA_TEST", model)

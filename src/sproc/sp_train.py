@@ -3,7 +3,11 @@ from snowflake.snowpark import DataFrame
 import snowflake.snowpark.types as T
 import snowflake.snowpark.functions as F
 from snowflake.ml.modeling.xgboost import XGBClassifier
+from snowflake.ml.modeling.metrics import roc_auc_score
+from snowflake.ml.modeling.metrics import roc_curve
+from snowflake.ml.registry import Registry
 import io
+import re
 
 from typing import *
 import json
@@ -59,6 +63,70 @@ def train_model(session: Session, db_name: str, schema_name: str, train_table: s
 #     MODEL_FILE = 'model.joblib.gz'
 #     joblib.dump(xgb_file, MODEL_FILE)
 #     session.file.put(MODEL_FILE, "@DEV.ML_MODELS", auto_compress=False, overwrite=True)
+
+
+def get_metrics(session: Session, db_name: str, schema_name: str, table_name: str, model: XGBClassifier)-> Dict[str, str]:
+    df = session.table(f"{db_name}.{schema_name}.{table_name}")
+    predict_on_df = model.predict_proba(df)
+    predict_clean = predict_on_df.drop('PREDICT_PROBA_0', 'PREDICTION').withColumnRenamed('PREDICT_PROBA_1', 'PREDICTION')
+    roc_auc = roc_auc_score(df=predict_clean, y_true_col_names="QUALITY", y_score_col_names="PREDICTION")
+    fpr, tpr, _ = roc_curve(df=predict_clean,  y_true_col_name="QUALITY", y_score_col_name="PREDICTION")
+    ks = max(tpr-fpr)
+    gini = 2*roc_auc-1
+    metrics = {
+        "roc_auc" : roc_auc,
+        "ks" : ks,
+        "gini" : gini
+    }
+    return metrics
+
+def next_version(model_name: str, df: pd.DataFrame)-> str:
+    # Filtrar el DataFrame por el nombre del modelo
+    model_df = df[df['name'] == model_name]
+    
+    # Verificar si el modelo existe en el DataFrame
+    if model_df.empty:
+        return None  # Devolver None si el modelo no se encuentra
+    
+    # Obtener las versiones asociadas al modelo y extraer el número de versión
+    versions_str = model_df['versions'].iloc[0]
+    version_list_str = re.findall(r'\d+', versions_str)
+    version_numbers = [int(version) for version in version_list_str]  # Convertir 'V1' a 1, 'V2' a 2, etc.
+    
+    # Encontrar la versión más alta y devolver la siguiente versión
+    next_version_number = max(version_numbers) + 1
+    next_version_string = 'V' + str(next_version_number)
+    
+    return next_version_string
+
+def register_model(
+    session: Session,
+    db_name: str, 
+    schema_name: str, 
+    model: XGBClassifier,
+    model_name: str, 
+    metrics_train: Dict[str, str],
+    metrics_test: Dict[str, str]
+    ) -> Registry:
+
+    reg = Registry(session=session, database_name=db_name,  schema_name=schema_name)
+    model_info = reg.show_models()
+    updated_version = next_version(model_name, model_info)
+
+    mv = reg.log_model(
+        model=model, 
+        model_name=f"{model_name}",
+        version_name=updated_version,
+        metrics={
+            "roc_auc_train":metrics_train["roc_auc"],
+            "ks_train":metrics_train["ks"],
+            "gini_train":metrics_train["gini"],
+            "roc_auc_test":metrics_test["roc_auc"],
+            "ks_test":metrics_test["ks"],
+            "gini_test":metrics_test["gini"]
+        })
+    
+    return mv
  
 
 def main(sess: Session) -> T.Variant:
@@ -74,7 +142,12 @@ def main(sess: Session) -> T.Variant:
 
     sess.file.put_stream(buffer, f"@DEV.ML_MODELS/{MODEL_FILE}", auto_compress=False, overwrite=True)
 
-    return str(f'El entrenamiento se realizó de manera exitosa')
+    metrics_train = get_metrics(sess,"BANANA_QUALITY", "DEV", "BANANA_TRAIN", xgbmodel)
+    metrics_test = get_metrics(sess,"BANANA_QUALITY", "DEV", "BANANA_TEST", xgbmodel)
+
+    mv = register_model(sess, "BANANA_QUALITY", "DEV", xgbmodel, model_name="BANANA_MODEL", metrics_train=metrics_train, metrics_test=metrics_test)
+
+    return str(f'El entrenamiento y registro en model registry se realizó de manera exitosa')
 
 
 sproc = session.sproc.register(func=main,
