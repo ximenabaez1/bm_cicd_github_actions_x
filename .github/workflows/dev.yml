@@ -68,6 +68,10 @@ jobs:
           python $GITHUB_WORKSPACE/src/sproc/sp_train.py
           python $GITHUB_WORKSPACE/src/sproc/sp_registry.py
 
+      - name: Creates train pipeline
+        run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/tasks/pipeline_train.sql
+  
+
         #TODO: INTENTAR HACER DESDES AQUI EL PUT DEL ARCHIVO
 
         # echo "SNOWSQL_ROLE=${SNOWSQL_ROLE}" >> $GITHUB_ENV
