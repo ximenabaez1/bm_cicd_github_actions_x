@@ -57,7 +57,7 @@ def split_proc(session: Session, db_name: str, schema_name: str, table_name: str
     # session.use_database(f'{db_name}')
     # session.use_schema(f'{schema_name}')
 
-    df_proc = read_table_sf(session, db_name, "FEATURE_ENGINEERING", table_name)
+    df_proc = read_table_sf(session, db_name, "DEV", table_name)
     df_train, df_test = df_proc.random_split([0.8, 0.2], seed=99)
     write_df_to_sf(df_train, db_name, schema_name, "BANANA_TRAIN")
     write_df_to_sf(df_test, db_name, schema_name, "BANANA_TEST")
