@@ -54,17 +54,15 @@ jobs:
           echo "schemaname = $SNOWFLAKE_SCHEMA_DEV" >> ~/.snowsql/config
 
       # Deploy setup
-      - name: Deploy setup SQL script with SnowSQL
-        run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/setup/dev/dev_space.sql
-
-      # - name: run python file
-      #   run: |
-      #     python $GITHUB_WORKSPACE/src/sproc/evaluate.py
-      #     python $GITHUB_WORKSPACE/src/sproc/process.py
-      #     python $GITHUB_WORKSPACE/src/sproc/inference.py
+      - name: Deploy setup SQL script with SnowSQL and loads data to stage
+        run: |
+         ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/setup/dev/dev_space.sql
+         ~/bin/snowsql -c dev -q "PUT file://$GITHUB_WORKSPACE/data/banana_quality_raw.csv @BANANA_QUALITY.DEV.RAW_DATA AUTO_COMPRESS=FALSE;"
 
       - name: Loads data to stage
         run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/loading/load_raw_file.sql
+
+        #TODO: INTENTAR HACER DESDES AQUI EL PUT DEL ARCHIVO
 
         # echo "SNOWSQL_ROLE=${SNOWSQL_ROLE}" >> $GITHUB_ENV
         # echo "SNOWSQL_ACCOUNT=${SNOWSQL_ACCOUNT}" >> $GITHUB_ENV
