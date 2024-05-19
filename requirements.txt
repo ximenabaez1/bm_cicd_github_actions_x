@@ -85,8 +85,8 @@ MarkupSafe==2.1.5
 matplotlib==3.7.1
 matplotlib-inline==0.1.6
 mistune==3.0.2
-mkl-fft #@ file:///C:/b/abs_19i1y8ykas/croot/mkl_fft_1695058226480/work
-mkl-random #@ file:///C:/b/abs_edwkj1_o69/croot/mkl_random_1695059866750/work
+#mkl-fft #@ file:///C:/b/abs_19i1y8ykas/croot/mkl_fft_1695058226480/work
+#mkl-random #@ file:///C:/b/abs_edwkj1_o69/croot/mkl_random_1695059866750/work
 mkl-service==2.4.0
 ml-dtypes==0.2.0
 multidict==6.0.5
