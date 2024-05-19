@@ -68,7 +68,7 @@ sproc = session.sproc.register(func=main,
                                   name='train_step',
                                   is_permanent=True,
                                   replace=True,
-                                  stage_location='@ML_MODELS',
+                                  stage_location='@BANANA_QUALITY.DEV.ML_MODELS',
                                   packages=['snowflake-ml-python',
                                             'snowflake-snowpark-python'
                                            ])
