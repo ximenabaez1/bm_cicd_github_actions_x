@@ -62,6 +62,12 @@ jobs:
       - name: Loads data to stage
         run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/loading/load_raw_file.sql
 
+      - name: process, train and registry
+        run: |
+          python $GITHUB_WORKSPACE/src/sproc/sp_process.py
+          python $GITHUB_WORKSPACE/src/sproc/sp_train.py
+          python $GITHUB_WORKSPACE/src/sproc/sp_registry.py
+
         #TODO: INTENTAR HACER DESDES AQUI EL PUT DEL ARCHIVO
 
         # echo "SNOWSQL_ROLE=${SNOWSQL_ROLE}" >> $GITHUB_ENV
