@@ -3,4 +3,7 @@ USE WAREHOUSE COMPUTE_WH;
 USE DATABASE $DB_NAME$;
 USE SCHEMA $SCHEMA$;
 
-SELECT * FROM BANANA_TEST;
+CREATE OR REPLACE TABLE mi_tabla (
+                id INT,
+                nombre STRING
+            );
