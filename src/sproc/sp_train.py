@@ -82,13 +82,9 @@ def get_metrics(session: Session, db_name: str, schema_name: str, table_name: st
 
 def next_version(model_name: str, df: pd.DataFrame)-> str:
     # Filtrar el DataFrame por el nombre del modelo
+    #model_df = df[df['name'] == model_name]
+
     model_df = df[df['name'] == model_name]
-    
-    # Verificar si el modelo existe en el DataFrame
-    if model_df.empty:
-        return None  # Devolver None si el modelo no se encuentra
-    
-    # Obtener las versiones asociadas al modelo y extraer el número de versión
     versions_str = model_df['versions'].iloc[0]
     version_list_str = re.findall(r'\d+', versions_str)
     version_numbers = [int(version) for version in version_list_str]  # Convertir 'V1' a 1, 'V2' a 2, etc.
@@ -111,9 +107,23 @@ def register_model(
 
     reg = Registry(session=session, database_name=db_name,  schema_name=schema_name)
     model_info = reg.show_models()
-    updated_version = next_version(model_name, model_info)
 
-    mv = reg.log_model(
+    if model_info.empty:
+        mv = reg.log_model(
+        model=model, 
+        model_name=f"{model_name}",
+        version_name="V0",
+        metrics={
+            "roc_auc_train":metrics_train["roc_auc"],
+            "ks_train":metrics_train["ks"],
+            "gini_train":metrics_train["gini"],
+            "roc_auc_test":metrics_test["roc_auc"],
+            "ks_test":metrics_test["ks"],
+            "gini_test":metrics_test["gini"]
+        })
+    else:
+        updated_version = next_version(model_name, model_info)
+        mv = reg.log_model(
         model=model, 
         model_name=f"{model_name}",
         version_name=updated_version,
