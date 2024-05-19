@@ -5,7 +5,7 @@ def main():
     # Obtener los valores de los secrets de GitHub
     account = os.environ.get('SNOWSQL_ACCOUNT')
     user = os.environ.get('SNOWSQL_USER')
-    password = os.environ.get('SNOWSQL_PASSWORD')
+    password = os.environ.get('SNOWSQL_PWD')
     db_name = os.environ.get('SNOWSQL_DATABASE')
     schema_name = os.environ.get('SNOWFLAKE_SCHEMA_DEV')
 
