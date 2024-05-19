@@ -152,12 +152,12 @@ sortedcontainers==2.4.0
 soupsieve==2.5
 sqlparse==0.4.4
 stack-data==0.6.3
-tensorboard==2.15.2
-tensorboard-data-server==0.7.2
-tensorflow==2.15.0
-tensorflow-estimator==2.15.0
-tensorflow-intel==2.15.0
-tensorflow-io-gcs-filesystem==0.31.0
+# tensorboard==2.15.2
+# tensorboard-data-server==0.7.2
+# tensorflow==2.15.0
+# tensorflow-estimator==2.15.0
+# tensorflow-intel==2.15.0
+# tensorflow-io-gcs-filesystem==0.31.0
 termcolor==2.4.0
 terminado==0.18.0
 #threadpoolctl #@ file:///Users/ktietz/demo/mc3/conda-bld/threadpoolctl_1629802263681/work
