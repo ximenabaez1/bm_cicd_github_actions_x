@@ -20,6 +20,9 @@ def main():
     sql_script = sql_script.replace('$DB_NAME$', db_name)
     sql_script = sql_script.replace('$SCHEMA$', schema_name)
 
+    # Separar las declaraciones SQL por punto y coma
+    sql_statements = sql_script.split(';')
+
     conn = connector.connect(
         user=user,
         password=password,
@@ -28,8 +31,14 @@ def main():
         schema=schema_name
     )
 
+       # Ejecutar cada declaración SQL por separado
     with conn.cursor() as cursor:
-        cursor.execute(sql_script)
+        for statement in sql_statements:
+            if statement.strip():  # Ignorar líneas en blanco
+                cursor.execute(statement)
+
+    # with conn.cursor() as cursor:
+    #     cursor.execute(sql_script)
 
     # Cerrar la conexión
     conn.close()
