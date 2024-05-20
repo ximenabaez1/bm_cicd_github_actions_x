@@ -17,7 +17,7 @@ def main():
     db_name = os.environ.get('SNOWSQL_DATABASE')
     schema_name = os.environ.get('SNOWFLAKE_SCHEMA_DEV')
     role = os.environ.get('SNOWSQL_ROLE')
-    wh = os.environ.get('SF_WAREHOUSE')
+    wh = os.environ.get('SNOWSQL_WAREHOUSE')
 
     parent_dir = os.path.dirname(os.environ['GITHUB_WORKSPACE'])
     print(f"directorio padre {parent_dir}")
