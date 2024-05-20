@@ -17,6 +17,14 @@ jobs:
   setup_snowflake_workspace_pre:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'pre' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    env:
+      SNOWSQL_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+      SNOWSQL_USER: ${{ secrets.SF_USERNAME }}
+      SNOWSQL_PWD: ${{ secrets.SF_PASSWORD }}
+      SNOWSQL_ROLE: ${{ secrets.SF_ROLE }}
+      SNOWSQL_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+      SNOWSQL_DATABASE: ${{ secrets.SF_DATABASE }}
+      SNOWFLAKE_SCHEMA_DEV: ${{secrets.SF_SCHEMA_PRO}}
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -26,10 +34,10 @@ jobs:
       - name: Setup Python 3.9.18
         uses: actions/setup-python@v4
         with:
-          python-version: '3.9.18'
+          python-version: '3.11'
       
-      # - name: Install Python packages
-      #   run: pip install -r requirements.txt
+      - name: Install Python packages
+        run: pip install -r requirements.txt
 
       - name: Download SnowSQL
         run:  curl -O https://sfc-repo.snowflakecomputing.com/snowsql/bootstrap/1.2/linux_x86_64/snowsql-1.2.9-linux_x86_64.bash
@@ -38,13 +46,6 @@ jobs:
         run: SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
 
       - name: Configure snowcli
-        env:
-          SNOWSQL_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
-          SNOWSQL_USER: ${{ secrets.SF_USERNAME }}
-          SNOWSQL_PWD: ${{ secrets.SF_PASSWORD }}
-          SNOWSQL_ROLE: ${{ secrets.SF_ROLE }}
-          SNOWSQL_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
-          SNOWSQL_DATABASE: ${{ secrets.SF_DATABASE }}
         run: |
           mkdir -p ~/.snowsql
           echo "[connections.dev]" > ~/.snowsql/config
@@ -54,10 +55,23 @@ jobs:
           echo "rolename = $SNOWSQL_ROLE" >> ~/.snowsql/config
           echo "warehousename = $SNOWSQL_WAREHOUSE" >> ~/.snowsql/config
           echo "dbname = $SNOWSQL_DATABASE" >> ~/.snowsql/config
-
-      - name: Test installation
-        run:  ~/bin/snowsql -v
+          echo "schemaname = $SNOWFLAKE_SCHEMA_DEV" >> ~/.snowsql/config
 
       # Deploy setup
-      - name: Deploy setup SQL script with SnowSQL
-        run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/setup/prod/prod_space.sql
+      - name: Deploy setup SQL script with SnowSQL and loads data to stage
+        run: |
+         python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/setup/general/env_space.sql
+         ~/bin/snowsql -c dev -q "PUT file://$GITHUB_WORKSPACE/data/banana_quality_raw.csv @BANANA_QUALITY.DEV.RAW_DATA AUTO_COMPRESS=FALSE;"
+
+      - name: Loads data to stage
+        run: 
+          python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/loading/load_raw_file.sql
+          
+      - name: process, train and registry
+        run: |
+          python $GITHUB_WORKSPACE/src/sproc/sp_process.py
+          python $GITHUB_WORKSPACE/src/sproc/sp_train.py
+
+      - name: Creates train pipeline
+        run: 
+         python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/tasks/pipeline_train.sql

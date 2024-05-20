@@ -5,6 +5,8 @@ on:
   push:
     branches:
       - dev
+  
+  workflow_dispatch:
 
 jobs:
   setup_snowflake_workspace_dev:
@@ -48,9 +50,6 @@ jobs:
           echo "warehousename = $SNOWSQL_WAREHOUSE" >> ~/.snowsql/config
           echo "dbname = $SNOWSQL_DATABASE" >> ~/.snowsql/config
           echo "schemaname = $SNOWFLAKE_SCHEMA_DEV" >> ~/.snowsql/config
-        #  python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/setup/general/env_space.sql
-        #  python $GITHUB_WORKSPACE/src/tasks/execute_sql.py --sql_file src/tasks/query_prueba.sql
-        #--sql_file src/tasks/query_prueba.sql
 
       # Deploy setup
       - name: Deploy setup SQL script with SnowSQL and loads data to stage
@@ -61,16 +60,12 @@ jobs:
       - name: Loads data to stage
         run: 
           python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/loading/load_raw_file.sql
-          #~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/loading/load_raw_file.sql
-
-
+          
       - name: process, train and registry
         run: |
           python $GITHUB_WORKSPACE/src/sproc/sp_process.py
           python $GITHUB_WORKSPACE/src/sproc/sp_train.py
-      #    python $GITHUB_WORKSPACE/src/sproc/sp_registry.py
 
       - name: Creates train pipeline
         run: 
-         #~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/tasks/pipeline_train.sql
          python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/tasks/pipeline_train.sql
