@@ -9,6 +9,7 @@ on:
 jobs:
   setup_snowflake_workspace_dev:
     runs-on: ubuntu-latest
+    environment: DEV
     env:
       SNOWSQL_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
       SNOWSQL_USER: ${{ secrets.SF_USERNAME }}
