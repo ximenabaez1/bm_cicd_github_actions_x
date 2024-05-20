@@ -9,6 +9,14 @@ on:
 jobs:
   setup_snowflake_workspace_dev:
     runs-on: ubuntu-latest
+    env:
+      SNOWSQL_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+      SNOWSQL_USER: ${{ secrets.SF_USERNAME }}
+      SNOWSQL_PWD: ${{ secrets.SF_PASSWORD }}
+      SNOWSQL_ROLE: ${{ secrets.SF_ROLE }}
+      SNOWSQL_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+      SNOWSQL_DATABASE: ${{ secrets.SF_DATABASE }}
+      SNOWFLAKE_SCHEMA_DEV: ${{secrets.SF_SCHEMA_DEV}}
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
@@ -30,14 +38,6 @@ jobs:
         run: SNOWSQL_DEST=~/bin SNOWSQL_LOGIN_SHELL=~/.profile bash snowsql-1.2.9-linux_x86_64.bash
 
       - name: Configure snowcli
-        env:
-          SNOWSQL_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
-          SNOWSQL_USER: ${{ secrets.SF_USERNAME }}
-          SNOWSQL_PWD: ${{ secrets.SF_PASSWORD }}
-          SNOWSQL_ROLE: ${{ secrets.SF_ROLE }}
-          SNOWSQL_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
-          SNOWSQL_DATABASE: ${{ secrets.SF_DATABASE }}
-          SNOWFLAKE_SCHEMA_DEV: ${{secrets.SF_SCHEMA_DEV}}
         run: |
           mkdir -p ~/.snowsql
           echo "[connections.dev]" > ~/.snowsql/config
@@ -54,14 +54,6 @@ jobs:
 
       # Deploy setup
       - name: Deploy setup SQL script with SnowSQL and loads data to stage
-        env:
-          SNOWSQL_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
-          SNOWSQL_USER: ${{ secrets.SF_USERNAME }}
-          SNOWSQL_PWD: ${{ secrets.SF_PASSWORD }}
-          SNOWSQL_ROLE: ${{ secrets.SF_ROLE }}
-          SNOWSQL_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
-          SNOWSQL_DATABASE: ${{ secrets.SF_DATABASE }}
-          SNOWFLAKE_SCHEMA_DEV: ${{secrets.SF_SCHEMA_DEV}}
         run: |
          python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/setup/general/env_space.sql
          ~/bin/snowsql -c dev -q "PUT file://$GITHUB_WORKSPACE/data/banana_quality_raw.csv @BANANA_QUALITY.DEV.RAW_DATA AUTO_COMPRESS=FALSE;"
