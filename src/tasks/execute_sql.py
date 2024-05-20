@@ -5,10 +5,10 @@ import argparse
 def main():
 
     # Configurar el parser de argumentos
-    parser = argparse.ArgumentParser(description='Ejecutar script SQL en Snowflake.')
-    parser.add_argument('--sql_file', type=str, required=True, help='Ruta del archivo SQL a ejecutar')
-    args = parser.parse_args()
-    print(f"proviene de argumento: {args.sql_file}")
+    # parser = argparse.ArgumentParser(description='Ejecutar script SQL en Snowflake.')
+    # parser.add_argument('--sql_file', type=str, required=True, help='Ruta del archivo SQL a ejecutar')
+    # args = parser.parse_args()
+    # print(f"proviene de argumento: {args.sql_file}")
 
     # Obtener los valores de los secrets de GitHub
     account = os.environ.get('SNOWSQL_ACCOUNT')
@@ -20,7 +20,10 @@ def main():
     parent_dir = os.path.dirname(os.environ['GITHUB_WORKSPACE'])
     print(f"directorio padre {parent_dir}")
 
-    file_path = os.path.join(parent_dir, 'src/tasks/query_prueba.sql') #args.sql_file
+    print(f"sin directorio padre: {os.environ['GITHUB_WORKSPACE']}")
+
+
+    file_path = os.path.join(os.environ['GITHUB_WORKSPACE'], 'src/tasks/query_prueba.sql') #args.sql_file
     print(f"filepath completo: {file_path}")
 
     # Leer el script SQL
