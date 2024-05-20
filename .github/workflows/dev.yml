@@ -71,11 +71,6 @@ jobs:
       #    python $GITHUB_WORKSPACE/src/sproc/sp_registry.py
 
       - name: Creates train pipeline
-        run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/tasks/pipeline_train.sql
-
-      # echo "SNOWSQL_ROLE=${SNOWSQL_ROLE}" >> $GITHUB_ENV
-      # echo "SNOWSQL_ACCOUNT=${SNOWSQL_ACCOUNT}" >> $GITHUB_ENV
-      # echo "SNOWSQL_USER=${SNOWSQL_USER}" >> $GITHUB_ENV
-      # echo "SNOWSQL_WAREHOUSE=${SNOWSQL_WAREHOUSE}" >> $GITHUB_ENV
-      # echo "SNOWSQL_DATABASE=${SNOWSQL_DATABASE}" >> $GITHUB_ENV
-      # echo "SNOWSQL_SCHEMA_DEV=${SNOWFLAKE_SCHEMA_DEV}" >> $GITHUB_ENV
+        run: 
+         #~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/tasks/pipeline_train.sql
+         python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/tasks/pipeline_train.sql
