@@ -82,7 +82,7 @@ sproc = session.sproc.register(func=main,
                                   name='process_step',
                                   is_permanent=True,
                                   replace=True,
-                                  stage_location=f'@{dict_creds['database']}.{ dict_creds['schema']}.ML_MODELS',
+                                  stage_location=f"@{dict_creds['database']}.{ dict_creds['schema']}.ML_MODELS",
                                   packages=['snowflake-ml-python',
                                             'snowflake-snowpark-python'
                                            ])
