@@ -54,6 +54,14 @@ jobs:
 
       # Deploy setup
       - name: Deploy setup SQL script with SnowSQL and loads data to stage
+        env:
+          SNOWSQL_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
+          SNOWSQL_USER: ${{ secrets.SF_USERNAME }}
+          SNOWSQL_PWD: ${{ secrets.SF_PASSWORD }}
+          SNOWSQL_ROLE: ${{ secrets.SF_ROLE }}
+          SNOWSQL_WAREHOUSE: ${{ secrets.SF_WAREHOUSE }}
+          SNOWSQL_DATABASE: ${{ secrets.SF_DATABASE }}
+          SNOWFLAKE_SCHEMA_DEV: ${{secrets.SF_SCHEMA_DEV}}
         run: |
          python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/setup/general/env_space.sql
          ~/bin/snowsql -c dev -q "PUT file://$GITHUB_WORKSPACE/data/banana_quality_raw.csv @BANANA_QUALITY.DEV.RAW_DATA AUTO_COMPRESS=FALSE;"
