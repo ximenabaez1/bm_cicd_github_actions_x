@@ -11,12 +11,14 @@ on:
   #    - 'migrations/**'
 
   # Allows you to run this workflow manually from the Actions tab
-  workflow_dispatch:
+  #workflow_dispatch:
+  #condicion que va antes de runs-on:  github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'pre' || github.event_name == 'workflow_dispatch'
+
 
 jobs:
   setup_snowflake_workspace_pre:
-    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'main' && github.event.pull_request.head.ref == 'pre' || github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    environment: PRO
     env:
       SNOWSQL_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
       SNOWSQL_USER: ${{ secrets.SF_USERNAME }}

@@ -13,6 +13,7 @@ jobs:
   setup_snowflake_workspace_pre:
     if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'pre' && github.event.pull_request.head.ref == 'dev'
     runs-on: ubuntu-latest
+    environment: PRE
     env:
       SNOWSQL_ACCOUNT: ${{ secrets.SF_ACCOUNT }}
       SNOWSQL_USER: ${{ secrets.SF_USERNAME }}
