@@ -16,6 +16,8 @@ def main():
     password = os.environ.get('SNOWSQL_PWD')
     db_name = os.environ.get('SNOWSQL_DATABASE')
     schema_name = os.environ.get('SNOWFLAKE_SCHEMA_DEV')
+    role = os.environ.get('SNOWSQL_ROLE')
+    wh = os.environ.get('SF_WAREHOUSE')
 
     parent_dir = os.path.dirname(os.environ['GITHUB_WORKSPACE'])
     print(f"directorio padre {parent_dir}")
@@ -30,9 +32,24 @@ def main():
     with open(file_path, 'r') as file:
         sql_script = file.read()
 
-    # Sustituir las variables de entorno en el script SQL
-    #sql_script = sql_script.replace('$DB_NAME$', db_name)
-    #sql_script = sql_script.replace('$SCHEMA$', schema_name)
+    #Diccionario de variables a sustituir
+    replacements = {
+        '$DB_NAME$':db_name,
+        '$SCHEMA$':schema_name,
+        '$ROLE$':role,
+        '$WAREHOUSE$':wh
+    }
+
+    # Realizar los reemplazos solo si la variable existe
+    for variable, value in replacements.items():
+        if value:
+            sql_script = sql_script.replace(variable, value)
+
+    #Sustituir las variables de entorno en el script SQL
+    # sql_script = sql_script.replace('$DB_NAME$', db_name)
+    # sql_script = sql_script.replace('$SCHEMA$', schema_name)
+    # sql_script = sql_script.replace('$ROLE$', role)
+    # sql_script = sql_script.replace('$WAREHOUSE$', wh)
 
     # Separar las declaraciones SQL por punto y coma
     sql_statements = sql_script.split(';')
@@ -45,11 +62,20 @@ def main():
         schema=schema_name
     )
 
-    # Ejecutar cada declaración SQL por separado
-    with conn.cursor() as cursor:
-        for statement in sql_statements:
-            if statement.strip():  # Ignorar líneas en blanco
-                cursor.execute(statement)
+    try:
+        with conn.cursor() as cursor:
+            for statement in sql_statements:
+                if statement.strip():  # Ignorar líneas en blanco
+                    print(f"Ejecutando: {statement.strip()}")
+                    cursor.execute(statement)
+    except Exception as e:
+        print(f"Error ejecutando SQL:{e}")
+
+    # # Ejecutar cada declaración SQL por separado
+    # with conn.cursor() as cursor:
+    #     for statement in sql_statements:
+    #         if statement.strip():  # Ignorar líneas en blanco
+    #             cursor.execute(statement)
 
     # Cerrar la conexión
     conn.close()
