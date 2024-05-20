@@ -15,7 +15,7 @@ def main():
     user = os.environ.get('SNOWSQL_USER')
     password = os.environ.get('SNOWSQL_PWD')
     db_name = os.environ.get('SNOWSQL_DATABASE')
-    schema_name = os.environ.get('SNOWFLAKE_SCHEMA_DEV')
+    schema_name = os.environ.get('SNOWFLAKE_SCHEMA')
     role = os.environ.get('SNOWSQL_ROLE')
     wh = os.environ.get('SNOWSQL_WAREHOUSE')
 
@@ -45,12 +45,6 @@ def main():
         if value:
             sql_script = sql_script.replace(variable, value)
 
-    #Sustituir las variables de entorno en el script SQL
-    # sql_script = sql_script.replace('$DB_NAME$', db_name)
-    # sql_script = sql_script.replace('$SCHEMA$', schema_name)
-    # sql_script = sql_script.replace('$ROLE$', role)
-    # sql_script = sql_script.replace('$WAREHOUSE$', wh)
-
     # Separar las declaraciones SQL por punto y coma
     sql_statements = sql_script.split(';')
 
@@ -71,13 +65,6 @@ def main():
     except Exception as e:
         print(f"Error ejecutando SQL:{e}")
 
-    # # Ejecutar cada declaración SQL por separado
-    # with conn.cursor() as cursor:
-    #     for statement in sql_statements:
-    #         if statement.strip():  # Ignorar líneas en blanco
-    #             cursor.execute(statement)
-
-    # Cerrar la conexión
     conn.close()
 
 
