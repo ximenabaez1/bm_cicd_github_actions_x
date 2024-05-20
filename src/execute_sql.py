@@ -17,7 +17,10 @@ def main():
     db_name = os.environ.get('SNOWSQL_DATABASE')
     schema_name = os.environ.get('SNOWFLAKE_SCHEMA_DEV')
 
-    file_path = os.path.join(os.environ['GITHUB_WORKSPACE'], 'src/tasks/query_prueba.sql') #args.sql_file
+    parent_dir = os.path.dirname(os.environ['GITHUB_WORKSPACE'])
+    print(f"directorio padre {parent_dir}")
+
+    file_path = os.path.join(parent_dir, 'src/tasks/query_prueba.sql') #args.sql_file
     print(f"filepath completo: {file_path}")
 
     # Leer el script SQL
