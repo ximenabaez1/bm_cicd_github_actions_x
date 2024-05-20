@@ -31,8 +31,8 @@ def main():
         sql_script = file.read()
 
     # Sustituir las variables de entorno en el script SQL
-    sql_script = sql_script.replace('$DB_NAME$', db_name)
-    sql_script = sql_script.replace('$SCHEMA$', schema_name)
+    #sql_script = sql_script.replace('$DB_NAME$', db_name)
+    #sql_script = sql_script.replace('$SCHEMA$', schema_name)
 
     # Separar las declaraciones SQL por punto y coma
     sql_statements = sql_script.split(';')
