@@ -8,6 +8,7 @@ def main():
     parser = argparse.ArgumentParser(description='Ejecutar script SQL en Snowflake.')
     parser.add_argument('--sql_file', type=str, required=True, help='Ruta del archivo SQL a ejecutar')
     args = parser.parse_args()
+    print(args.sql_file)
 
     # Obtener los valores de los secrets de GitHub
     account = os.environ.get('SNOWSQL_ACCOUNT')
@@ -16,7 +17,7 @@ def main():
     db_name = os.environ.get('SNOWSQL_DATABASE')
     schema_name = os.environ.get('SNOWFLAKE_SCHEMA_DEV')
 
-    file_path = os.path.join(os.environ['GITHUB_WORKSPACE'], args.sql_file) #'src/tasks/query_prueba.sql'
+    file_path = os.path.join(os.environ['GITHUB_WORKSPACE'], 'src/tasks/query_prueba.sql') #args.sql_file
     print(file_path)
 
     # Leer el script SQL
