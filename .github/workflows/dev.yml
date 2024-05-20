@@ -59,7 +59,10 @@ jobs:
          ~/bin/snowsql -c dev -q "PUT file://$GITHUB_WORKSPACE/data/banana_quality_raw.csv @BANANA_QUALITY.DEV.RAW_DATA AUTO_COMPRESS=FALSE;"
 
       - name: Loads data to stage
-        run: ~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/loading/load_raw_file.sql
+        run: 
+          python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/loading/load_raw_file.sql
+          #~/bin/snowsql -c dev -f $GITHUB_WORKSPACE/src/loading/load_raw_file.sql
+
 
       - name: process, train and registry
         run: |
