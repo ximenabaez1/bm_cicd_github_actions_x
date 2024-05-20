@@ -1,7 +1,14 @@
 import os
 from snowflake import connector
+import argparse
 
 def main():
+
+    # Configurar el parser de argumentos
+    parser = argparse.ArgumentParser(description='Ejecutar script SQL en Snowflake.')
+    parser.add_argument('--sql_file', type=str, required=True, help='Ruta del archivo SQL a ejecutar')
+    args = parser.parse_args()
+
     # Obtener los valores de los secrets de GitHub
     account = os.environ.get('SNOWSQL_ACCOUNT')
     user = os.environ.get('SNOWSQL_USER')
@@ -9,7 +16,7 @@ def main():
     db_name = os.environ.get('SNOWSQL_DATABASE')
     schema_name = os.environ.get('SNOWFLAKE_SCHEMA_DEV')
 
-    file_path = os.path.join(os.environ['GITHUB_WORKSPACE'], 'src/tasks/query_prueba.sql')
+    file_path = os.path.join(os.environ['GITHUB_WORKSPACE'], args.sql_file) #'src/tasks/query_prueba.sql'
     print(file_path)
 
     # Leer el script SQL
@@ -31,22 +38,15 @@ def main():
         schema=schema_name
     )
 
-       # Ejecutar cada declaración SQL por separado
+    # Ejecutar cada declaración SQL por separado
     with conn.cursor() as cursor:
         for statement in sql_statements:
             if statement.strip():  # Ignorar líneas en blanco
                 cursor.execute(statement)
 
-    # with conn.cursor() as cursor:
-    #     cursor.execute(sql_script)
-
     # Cerrar la conexión
     conn.close()
 
-
-
-    # Ejecutar el script SQL
-    # Aquí puedes usar Snowpark o cualquier otra biblioteca que prefieras para ejecutar el script SQL
 
 if __name__ == "__main__":
     main()
