@@ -67,12 +67,12 @@ def main(sess: Session) -> T.Variant:
 
     # sess.use_database("BANANA_QUALITY")
     # sess.use_schema("FEATURE_ENGINEERING")
-    df_raw = read_table_sf(sess, "BANANA_QUALITY", "DEV", "BANANA_QUALITY_RAW")
+    df_raw = read_table_sf(sess, dict_creds['database'], dict_creds['schema'], "BANANA_QUALITY_RAW")
    
     df_proc = transform_to_numeric_target(df_raw)
-    write_df_to_sf(df_proc, "BANANA_QUALITY","DEV", "BANANA_QUALITY_PROCESSED")
+    write_df_to_sf(df_proc, dict_creds['database'],dict_creds['schema'], "BANANA_QUALITY_PROCESSED")
 
-    split_proc(sess, "BANANA_QUALITY", "DEV", "BANANA_QUALITY_PROCESSED")
+    split_proc(sess, dict_creds['database'], dict_creds['schema'], "BANANA_QUALITY_PROCESSED")
     #sess.close()
     
     return str(f'El procesamiento se realizó de manera exitosa')
@@ -82,7 +82,7 @@ sproc = session.sproc.register(func=main,
                                   name='process_step',
                                   is_permanent=True,
                                   replace=True,
-                                  stage_location='@BANANA_QUALITY.DEV.ML_MODELS',
+                                  stage_location=f'@{dict_creds['database']}.{ dict_creds['schema']}.ML_MODELS',
                                   packages=['snowflake-ml-python',
                                             'snowflake-snowpark-python'
                                            ])

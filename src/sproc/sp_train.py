@@ -141,7 +141,7 @@ def register_model(
 
 def main(sess: Session) -> T.Variant:
 
-    xgbmodel = train_model(sess, "BANANA_QUALITY", "DEV", "BANANA_TRAIN")
+    xgbmodel = train_model(sess,  dict_creds['database'],  dict_creds['schema'], "BANANA_TRAIN")
     xgb_file = xgbmodel.to_xgboost()
     MODEL_FILE = 'model.joblib.gz'
     # joblib.dump(xgb_file, MODEL_FILE)
@@ -150,12 +150,12 @@ def main(sess: Session) -> T.Variant:
     joblib.dump(xgb_file, buffer)
     buffer.seek(0)
 
-    sess.file.put_stream(buffer, f"@DEV.ML_MODELS/{MODEL_FILE}", auto_compress=False, overwrite=True)
+    sess.file.put_stream(buffer, f"@{dict_creds['schema']}.ML_MODELS/{MODEL_FILE}", auto_compress=False, overwrite=True)
 
-    metrics_train = get_metrics(sess,"BANANA_QUALITY", "DEV", "BANANA_TRAIN", xgbmodel)
-    metrics_test = get_metrics(sess,"BANANA_QUALITY", "DEV", "BANANA_TEST", xgbmodel)
+    metrics_train = get_metrics(sess,dict_creds['database'], dict_creds['schema'], "BANANA_TRAIN", xgbmodel)
+    metrics_test = get_metrics(sess,dict_creds['database'], dict_creds['schema'], "BANANA_TEST", xgbmodel)
 
-    mv = register_model(sess, "BANANA_QUALITY", "DEV", xgbmodel, model_name="BANANA_MODEL", metrics_train=metrics_train, metrics_test=metrics_test)
+    mv = register_model(sess, dict_creds['database'], dict_creds['schema'], xgbmodel, model_name="BANANA_MODEL", metrics_train=metrics_train, metrics_test=metrics_test)
 
     return str(f'El entrenamiento y registro en model registry se realizó de manera exitosa')
 
@@ -164,7 +164,7 @@ sproc = session.sproc.register(func=main,
                                   name='train_step',
                                   is_permanent=True,
                                   replace=True,
-                                  stage_location='@BANANA_QUALITY.DEV.ML_MODELS',
+                                  stage_location=f'@{dict_creds['database']}.{dict_creds['schema']}.ML_MODELS',
                                   packages=['snowflake-ml-python',
                                             'snowflake-snowpark-python'
                                            ])
