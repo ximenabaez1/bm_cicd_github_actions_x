@@ -155,7 +155,7 @@ def main(sess: Session) -> T.Variant:
     metrics_train = get_metrics(sess,dict_creds['database'], dict_creds['schema'], "BANANA_TRAIN", xgbmodel)
     metrics_test = get_metrics(sess,dict_creds['database'], dict_creds['schema'], "BANANA_TEST", xgbmodel)
 
-    mv = register_model(sess, dict_creds['database'], dict_creds['schema'], xgbmodel, model_name="BANANA_MODEL", metrics_train=metrics_train, metrics_test=metrics_test)
+    mv = register_model(session=sess, db_name=dict_creds['database'], schema_name=dict_creds['schema'],model=xgbmodel, model_name="BANANA_MODEL", metrics_train=metrics_train, metrics_test=metrics_test)
 
     return str(f'El entrenamiento y registro en model registry se realizó de manera exitosa')
 
