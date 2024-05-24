@@ -2,4 +2,4 @@
 Propuesta CICD de github actions
 
 prueba de nuevo commit
-prubea de nuevo commit despues de un git reset hard
+prueba de nuevo commit despues de un git reset hard
