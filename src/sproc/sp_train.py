@@ -165,6 +165,7 @@ sproc = session.sproc.register(func=main,
                                   is_permanent=True,
                                   replace=True,
                                   stage_location=f"@{dict_creds['database']}.{dict_creds['schema']}.ML_MODELS",
+                                  execute_as='caller',
                                   packages=['snowflake-ml-python',
                                             'snowflake-snowpark-python'
                                            ])
