@@ -1,4 +1,4 @@
-name: snowflake-dataops-dev
+name: snowflake-dataops-exp
 
 # Controls when the action will run. 
 on:
@@ -7,7 +7,7 @@ on:
       - exp
 
 jobs:
-  setup_snowflake_workspace_dev:
+  setup_snowflake_workspace_exp:
     runs-on: ubuntu-latest
     environment: EXP
     env:
