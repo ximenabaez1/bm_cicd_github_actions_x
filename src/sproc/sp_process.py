@@ -37,7 +37,7 @@ dict_creds['schema'] = config['connections.dev']['schemaname']
 session = Session.builder.configs(dict_creds).create()
 session.use_database(dict_creds['database'])
 session.use_schema(dict_creds['schema'])
-session.custom_package_usage_config['enabled']
+session.custom_package_usage_config = {"enabled": True}
 
 
 #Functions
