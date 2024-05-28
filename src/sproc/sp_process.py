@@ -37,7 +37,8 @@ dict_creds['schema'] = config['connections.dev']['schemaname']
 session = Session.builder.configs(dict_creds).create()
 session.use_database(dict_creds['database'])
 session.use_schema(dict_creds['schema'])
-session.custom_package_usage_config = {"enabled": True}
+# TO DO: CONFIGURACIÓN PARA DEFINIR VERSIONES DE PAQUETES A UTILIZAR.
+#session.custom_package_usage_config = {"enabled": True}
 
 
 #Functions
@@ -84,9 +85,14 @@ sproc = session.sproc.register(func=main,
                                   is_permanent=True,
                                   replace=True,
                                   stage_location=f"@{dict_creds['database']}.{ dict_creds['schema']}.ML_MODELS",
-                                  packages=['snowflake-ml-python==1.5.1',
-                                            'snowflake-snowpark-python==1.17.0'
+                                  packages=['snowflake-ml-python',
+                                            'snowflake-snowpark-python'
                                            ])
+
+#TO DO
+#Propuesta de versiones de paquets
+#snowflke-ml-python==1.5.1',
+#snowflake-snowpark-python==1.17.0
 
 
     
