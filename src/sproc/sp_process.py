@@ -84,7 +84,7 @@ sproc = session.sproc.register(func=main,
                                   is_permanent=True,
                                   replace=True,
                                   stage_location=f"@{dict_creds['database']}.{ dict_creds['schema']}.ML_MODELS",
-                                  packages=['snowflake-ml-python==1.15.1',
+                                  packages=['snowflake-ml-python==1.5.1',
                                             'snowflake-snowpark-python==1.17.0'
                                            ])
 
