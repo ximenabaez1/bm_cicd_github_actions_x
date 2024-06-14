@@ -1,22 +1,18 @@
 name: snowflake-dataops-validate
 
 # Controls when the action will run. 
-# on:
-#   pull_request:
-#     branches:
-#       - validate
-#     types:
-#       - closed
-
 on:
-  push:
+  pull_request:
     branches:
       - validate
+    types:
+      - closed
+
   #  paths:
   #    - 'migrations/**'
 jobs:
   setup_snowflake_workspace_validate:
-    
+    if: github.event.pull_request.merged == true && github.event.pull_request.base.ref == 'validate' && github.event.pull_request.head.ref == 'exp'
     runs-on: ubuntu-latest
     environment: VALIDATE
     env:
