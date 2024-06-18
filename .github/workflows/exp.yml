@@ -60,11 +60,15 @@ jobs:
       #   run: 
       #     python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/loading/load_raw_file.sql
           
-      - name: loads process and train store procedures on Snowflake
-        run: |
-          python $GITHUB_WORKSPACE/src/sproc/sp_process.py
-          python $GITHUB_WORKSPACE/src/sproc/sp_train.py
+      # - name: loads process and train store procedures on Snowflake
+      #   run: |
+      #     python $GITHUB_WORKSPACE/src/sproc/sp_process.py
+      #     python $GITHUB_WORKSPACE/src/sproc/sp_train.py
 
-      - name: Creates train pipeline
+      # - name: Creates train pipeline
+      #   run: 
+      #    python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/tasks/pipeline_train.sql
+
+      - name: Creates pipeline
         run: 
-         python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/tasks/pipeline_train.sql
+         python $GITHUB_WORKSPACE/src/dags/dag_tasks.py
