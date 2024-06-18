@@ -24,7 +24,7 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v3
 
-      - name: Setup Python 3.9.18
+      - name: Setup Python 3.11
         uses: actions/setup-python@v4
         with:
           python-version: '3.11'
@@ -60,7 +60,7 @@ jobs:
       #   run: 
       #     python $GITHUB_WORKSPACE/src/execute_sql.py --sql_file src/loading/load_raw_file.sql
           
-      - name: process, train and registry
+      - name: loads process and train store procedures on Snowflake
         run: |
           python $GITHUB_WORKSPACE/src/sproc/sp_process.py
           python $GITHUB_WORKSPACE/src/sproc/sp_train.py
