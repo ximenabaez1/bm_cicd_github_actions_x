@@ -49,7 +49,7 @@ session.use_schema(dict_creds['schema'])
 
 with DAG("MY_DAG", schedule=timedelta(minutes=2)) as dag:
     dag_task1 = DAGTask(
-        "dagtask1",
+        "processing",
         StoredProcedureCall(
             func=process_data,
             stage_location="@ML_MODELS",
@@ -59,7 +59,7 @@ with DAG("MY_DAG", schedule=timedelta(minutes=2)) as dag:
         warehouse="COMPUTE_WH"
     )
     dag_task2 = DAGTask(
-        "dagtask2",
+        "train_register",
         StoredProcedureCall(
             func=train_register,
             stage_location=f"@{dict_creds['database']}.{dict_creds['schema']}.ML_MODELS",
